@@ -39,6 +39,3 @@ tests/_support/_generated
 /runtime
 
 /web/assets/*
-
-# Ignore DB connection file
-/config/db.php
