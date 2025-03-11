@@ -7,6 +7,7 @@ use app\models\TblUsuariosSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use Yii;
 
 /**
  * UsuariosController implements the CRUD actions for TblUsuarios model.
@@ -67,7 +68,22 @@ class UsuariosController extends Controller
      */
     public function actionCreate()
     {
+        //No se puede crear un usuario si no esta logueado
+        if (Yii::$app->user->isGuest) {
+            return $this->redirect(['site/login']);
+        }
         $model = new TblUsuarios();
+
+        //Asignar valores de creación 
+        $model->tbl_usuarios_created = date('Y-m-d H:i:s');
+        //Asignar quien lo creo
+        $model->tbl_usuarios_createdby = Yii::$app->user->identity->tbl_usuarios_email;
+        //Generar Auth Key
+        $model->tbl_usuarios_auth_key = Yii::$app->security->generateRandomString();
+        //Generar Access Token
+        $model->tbl_usuarios_access_token = Yii::$app->security->generateRandomString();
+        //Asignar rol (esta por verse si se asigna por defecto o se deja en blanco)
+        //$model->tbl_usuarios_rol = 'user';
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {

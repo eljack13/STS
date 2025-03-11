@@ -22,17 +22,17 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'tbl_usuarios_recoverpass')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'tbl_usuarios_auth_key')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'tbl_usuarios_auth_key')->hiddenInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'tbl_usuarios_access_token')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'tbl_usuarios_access_token')->hiddenInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'tbl_usuarios_telefono')->textInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'tbl_usuarios_rol')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'tbl_usuarios_created')->textInput() ?>
+    <?= $form->field($model, 'tbl_usuarios_created')->hiddenInput() ?>
 
-    <?= $form->field($model, 'tbl_usuarios_createdby')->textInput() ?>
+    <?= $form->field($model, 'tbl_usuarios_createdby')->hiddenInput() ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

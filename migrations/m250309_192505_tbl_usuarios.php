@@ -38,7 +38,7 @@ class m250309_192505_tbl_usuarios extends Migration
             'tbl_usuarios_telefono' => $this->string(100)->notNull(),
             'tbl_usuarios_rol' => $this->string(100)->notNull(),
             'tbl_usuarios_created' => $this->dateTime()->notNull(),
-            'tbl_usuarios_createdby' => $this->dateTime()->notNull(),
+            'tbl_usuarios_createdby' => $this->string()->notNull(),
         ]);
     }
 
