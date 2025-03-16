@@ -29,11 +29,7 @@ class RbacController extends Controller
         // Crear roles
         $roleSuperAdmin = $auth->createRole('SuperAdmin');
         $roleAdmin = $auth->createRole("Admnistrador");
-        $roleRecursosMateriales = $auth->createRole('Recursos materiales');
-        $roleProveedorA = $auth->createRole('Proveedor A');
-        $roleProveedorB = $auth->createRole('Proveedor B');
-        $roleUIE = $auth->createRole('UIE');
-        $roleAutoridadEscolar = $auth->createRole('Autoridad Escolar');
+
 
 
         echo "RBAC inicializado correctamente.\n";

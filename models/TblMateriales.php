@@ -46,9 +46,10 @@ class TblMateriales extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'tbl_materiales_id' => 'Tbl Materiales ID',
+            'tbl_materiales_id' => 'Tbl Materiales ID nano esz puto ',
             'tbl_materiales_nombre' => 'Tbl Materiales Nombre',
             'tbl_materiales_descripcion' => 'Tbl Materiales Descripcion',
+            'tbl_materiales_codigo' => 'Tbl Materiales Codigo',
             'tbl_materiales_cantidad' => 'Tbl Materiales Cantidad',
             'tbl_materiales_fechaingreso' => 'Tbl Materiales Fechaingreso',
             'tbl_materiales_created' => 'Tbl Materiales Created',

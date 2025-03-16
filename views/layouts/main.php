@@ -29,32 +29,68 @@ $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/x-icon', 'href' => Yii
 <body class="d-flex flex-column h-100">
 <?php $this->beginBody() ?>
 
-<header id="header">
+
+<header id="header" class="elegant-header">
     <?php
     NavBar::begin([
-        'brandLabel' => Yii::$app->name,
+        'brandLabel' => '<span class="brand-text">' . 'STS   ' . '</span>',
         'brandUrl' => Yii::$app->homeUrl,
-        'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top']
+        'options' => [
+            'class' => 'navbar-expand-md fixed-top elegant-navbar',
+            'id' => 'main-navbar'
+        ],
+        'innerContainerOptions' => [
+            'class' => 'container-fluid px-4'
+        ],
+        'togglerContent' => '<span class="navbar-toggler-icon"></span>',
+        'togglerOptions' => [
+            'class' => 'navbar-toggler custom-toggler'
+        ],
     ]);
-    echo Nav::widget([
-        'options' => ['class' => 'navbar-nav'],
+    
+    echo Nav::widget([ 
+        'options' => ['class' => 'navbar-nav me-auto main-nav'],
+        'encodeLabels' => false,
         'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'Usuarios', 'url' => ['/usuarios/index']],
-        // ['label' => 'About', 'url' => ['/site/about']],
-        //['label' => 'Contact', 'url' => ['/site/contact']],
-            Yii::$app->user->isGuest
-                ? ['label' => 'Login', 'url' => ['/site/login']]
-                : '<li class="nav-item">'
-                    . Html::beginForm(['/site/logout'])
-                    . Html::submitButton(
-                        'Logout (' . Yii::$app->user->identity->tbl_usuarios_email. ')',
-                        ['class' => 'nav-link btn btn-link logout']
-                    )
-                    . Html::endForm()
-                    . '</li>'
+            ['label' => '<i class="fas fa-home nav-icon"></i><span class="nav-text">Inicio</span>', 'url' => ['/site/index']],
+            ['label' => '<i class="fas fa-chart-line nav-icon"></i><span class="nav-text">Materiales</span>', 'url' => ['/materiales/index']],
+            ['label' => '<i class="fas fa-users nav-icon"></i><span class="nav-text">Usuarios</span>', 'url' => ['/usuarios/index']],
+        //    ['label' => '<i class="fas fa-envelope nav-icon"></i><span class="nav-text">Solicitud</span>', 'url' => ['/solicitudes/create']],
         ]
     ]);
+
+  
+    if (Yii::$app->user->isGuest) {
+        echo Nav::widget([
+            'options' => ['class' => 'navbar-nav ms-auto user-nav'],
+            'encodeLabels' => false,
+            'items' => [
+                ['label' => '<i class="fas fa-sign-in-alt nav-icon"></i><span class="nav-text">Login</span>', 
+                 'url' => ['/site/login'], 
+                 'linkOptions' => ['class' => 'nav-link login-link']]
+            ]
+        ]);
+    } else {
+        echo '<ul class="navbar-nav ms-auto user-nav">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle user-dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="fas fa-user-circle nav-icon"></i>
+                        <span class="nav-text user-email">' . Yii::$app->user->identity->tbl_usuarios_email . '</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu">
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog"></i> Perfil</a></li>
+                       
+                        <li><hr class="dropdown-divider"></li>
+                        <li>' . 
+                            Html::beginForm(['/site/logout'], 'post', ['class' => 'logout-form']) .
+                            Html::submitButton('<i class="fas fa-sign-out-alt"></i> Cerrar sesión', ['class' => 'dropdown-item logout-button']) .
+                            Html::endForm() . 
+                        '</li>
+                    </ul>
+                </li>
+            </ul>';
+    }
+    
     NavBar::end();
     ?>
 </header>

@@ -17,8 +17,9 @@ class TblMaterialesSearch extends TblMateriales
     public function rules()
     {
         return [
-            [['tbl_materiales_id', 'tbl_materiales_cantidad', 'tbl_materiales_fechaingreso'], 'integer'],
-            [['tbl_materiales_nombre', 'tbl_materiales_descripcion', 'tbl_materiales_created', 'tbl_materiales_createdby'], 'safe'],
+            [['tbl_materiales_id', 'tbl_materiales_cantidad'], 'integer'],
+            [['tbl_materiales_cantidad'], 'unique'],
+            [['tbl_materiales_descripcion', 'tbl_materiales_created', 'tbl_materiales_createdby'], 'safe'],
         ];
     }
 
@@ -60,6 +61,7 @@ class TblMaterialesSearch extends TblMateriales
         // grid filtering conditions
         $query->andFilterWhere([
             'tbl_materiales_id' => $this->tbl_materiales_id,
+            'tbl_materiales_codigo' => $this->tbl_materiales_codigo,
             'tbl_materiales_cantidad' => $this->tbl_materiales_cantidad,
             'tbl_materiales_fechaingreso' => $this->tbl_materiales_fechaingreso,
             'tbl_materiales_created' => $this->tbl_materiales_created,
@@ -71,4 +73,6 @@ class TblMaterialesSearch extends TblMateriales
 
         return $dataProvider;
     }
+
+    
 }

@@ -7,6 +7,7 @@ use app\models\TblMaterialesSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use Yii;
 
 /**
  * MaterialesController implements the CRUD actions for TblMateriales model.
@@ -18,18 +19,27 @@ class MaterialesController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
+        return [
+            'access' => [
+                'class' => \yii\filters\AccessControl::className(),
+                'only' => ['index', 'view', 'create', 'update', 'delete'],
+                'rules' => [
+                    [
+                        'actions' => ['index', 'view', 'create', 'update', 'delete'],
+                        'allow' => true,
+                        'roles' => ['@'],
                     ],
                 ],
-            ]
-        );
+            ],
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
+            ],
+        ];
     }
+
 
     /**
      * Lists all TblMateriales models.
@@ -69,6 +79,10 @@ class MaterialesController extends Controller
     {
         $model = new TblMateriales();
 
+        //Asignar valores por defecto 
+        $model->tbl_materiales_created = date('Y-m-d H:i:s');
+        //Asignar usuario logueado
+        $model->tbl_materiales_createdby = Yii::$app->user->identity->tbl_usuarios_email;
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
                 return $this->redirect(['view', 'tbl_materiales_id' => $model->tbl_materiales_id]);
@@ -131,4 +145,60 @@ class MaterialesController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+    public function actionVista()
+    {
+        return $this->render('vista');
+    }
+    
+  
+
+/**
+ * Procesa una imagen para detectar códigos de barras
+ * @return \yii\web\Response
+ */
+public function actionScanBarcode()
+{
+    Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+    
+    // Verificar si se recibió una imagen
+    if (isset($_POST['imageData'])) {
+        $imageData = $_POST['imageData'];
+        
+        // Eliminar el prefijo "data:image/png;base64,"
+        $imageData = str_replace('data:image/png;base64,', '', $imageData);
+        $imageData = str_replace(' ', '+', $imageData);
+        
+        // Decodificar la imagen
+        $imageDecoded = base64_decode($imageData);
+        
+        // Crear un archivo temporal
+        $tempFile = tempnam(sys_get_temp_dir(), 'barcode_');
+        file_put_contents($tempFile, $imageDecoded);
+        
+        try {
+        
+            
+            // Por ahora, simularemos una detección
+            $code = "123456789012"; // Esto sería reemplazado por el código real detectado
+            
+            return [
+                'success' => true,
+                'code' => $code
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        } finally {
+            // Eliminar el archivo temporal
+            @unlink($tempFile);
+        }
+    }
+    
+    return [
+        'success' => false,
+        'error' => 'No se recibió ninguna imagen'
+    ];
+}
 }
