@@ -1,5 +1,4 @@
 <?php
-
 namespace app\controllers;
 
 use Yii;
@@ -20,13 +19,17 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout', 'index'],
+                'only' => ['logout', 'index', 'login'],
                 'rules' => [
                     [
-                        
-                        'actions' => ['logout', 'index'],
+                        'actions' => ['login', 'index'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => ['?'], // Usuario no autenticado
+                    ],
+                    [
+                        'actions' => ['logout'],
+                        'allow' => true,
+                        'roles' => ['@'], // Usuario autenticado
                     ],
                 ],
             ],
@@ -62,6 +65,11 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        // Redirigir usuarios autenticados a otra página
+        if (!Yii::$app->user->isGuest) {
+            return $this->redirect(['dashboard/index']); // O cualquier otra página para usuarios autenticados
+        }
+        
         return $this->render('index');
     }
 
