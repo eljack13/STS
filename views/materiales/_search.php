@@ -21,9 +21,11 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'tbl_materiales_descripcion') ?>
 
+    <?= $form->field($model, 'tbl_materiales_codigo') ?>
+
     <?= $form->field($model, 'tbl_materiales_cantidad') ?>
 
-    <?= $form->field($model, 'tbl_materiales_fechaingreso') ?>
+    <?php // echo $form->field($model, 'tbl_materiales_fechaingreso') ?>
 
     <?php // echo $form->field($model, 'tbl_materiales_created') ?>
 

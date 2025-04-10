@@ -1,13 +1,14 @@
 <?php
+// views/usuarios/view.php
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
-/** @var yii\web\View $this */
-/** @var app\models\TblUsuarios $model */
+/* @var $this yii\web\View */
+/* @var $model app\models\TblUsuarios */
 
-$this->title = $model->tbl_usuarios_id;
-$this->params['breadcrumbs'][] = ['label' => 'Tbl Usuarios', 'url' => ['index']];
+$this->title = $model->tbl_usuarios_nombre . ' ' . $model->tbl_usuarios_apellido;
+$this->params['breadcrumbs'][] = ['label' => 'Usuarios', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
@@ -16,11 +17,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'tbl_usuarios_id' => $model->tbl_usuarios_id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'tbl_usuarios_id' => $model->tbl_usuarios_id], [
+        <?= Html::a('Actualizar', ['update', 'id' => $model->tbl_usuarios_id], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Eliminar', ['delete', 'id' => $model->tbl_usuarios_id], [
             'class' => 'btn btn-danger',
             'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
+                'confirm' => '¿Estás seguro de que quieres eliminar este usuario?',
                 'method' => 'post',
             ],
         ]) ?>
@@ -33,12 +34,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'tbl_usuarios_nombre',
             'tbl_usuarios_apellido',
             'tbl_usuarios_email:email',
-            'tbl_usuarios_password',
-            'tbl_usuarios_recoverpass',
-            'tbl_usuarios_auth_key',
-            'tbl_usuarios_access_token',
             'tbl_usuarios_telefono',
-            'tbl_usuarios_rol',
+            [
+                'attribute' => 'tbl_usuarios_rol',
+                'value' => function($model) {
+                    return $model->tbl_usuarios_rol === 'admin' ? 'Administrador' : 'Usuario Regular';
+                }
+            ],
             'tbl_usuarios_created',
             'tbl_usuarios_createdby',
         ],

@@ -14,6 +14,12 @@ $config = [
         '@tests' => '@app/tests',
     ],
     'components' => [
+        'inventario' => [
+            'class' => 'app\services\InventarioService',
+        ],
+                'authManager' => [
+            'class' => 'yii\rbac\DbManager',
+        ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],

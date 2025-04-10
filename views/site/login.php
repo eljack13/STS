@@ -1018,7 +1018,7 @@ $this->registerJs($loginJs);
                     <div class="login-image-content">
                         <h2 class="login-image-title">Bienvenido de Nuevo</h2>
                         <p class="login-image-text welcome-text">Nos alegra verte de nuevo. Inicia sesión para acceder al panel administrativo y gestionar tu sistema.</p>
-                        <img src="logo.jpg" width="200" class="img-fluid rounded" alt="Ilustración de inicio de sesión" style="max-width: 100%; margin-top: 2rem; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));">
+                        <img src="icon.jpg" width="200" class="img-fluid rounded" alt="Ilustración de inicio de sesión" style="max-width: 100%; margin-top: 2rem; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));">
                     </div>
                     
                     <!-- System status indicator -->

@@ -8,6 +8,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use Yii;
+use app\services\InventarioService;
 
 /**
  * MaterialesController implements the CRUD actions for TblMateriales model.
@@ -50,12 +51,13 @@ class MaterialesController extends Controller
     {
         $searchModel = new TblMaterialesSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
-
+       
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
+    
 
     /**
      * Displays a single TblMateriales model.
@@ -150,7 +152,7 @@ class MaterialesController extends Controller
         return $this->render('vista');
     }
     
-  
+    
 
 /**
  * Procesa una imagen para detectar códigos de barras
@@ -201,4 +203,17 @@ public function actionScanBarcode()
         'error' => 'No se recibió ninguna imagen'
     ];
 }
+
+   public function actionReportes() 
+    {
+        $model = new TblMateriales();
+        $searchModel = new TblMaterialesSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
+        
+        return $this->render('reportes', [
+            'model' => $model,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
 }

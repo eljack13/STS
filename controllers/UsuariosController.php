@@ -80,27 +80,24 @@ class UsuariosController extends Controller
         if (Yii::$app->user->isGuest) {
             return $this->redirect(['site/login']);
         }
+        
         $model = new TblUsuarios();
-
-        //Asignar valores de creación 
-        $model->tbl_usuarios_created = date('Y-m-d H:i:s');
-        //Asignar quien lo creo
-        $model->tbl_usuarios_createdby = Yii::$app->user->identity->tbl_usuarios_email;
-        //Generar Auth Key
-        $model->tbl_usuarios_auth_key = Yii::$app->security->generateRandomString();
-        //Generar Access Token
-        $model->tbl_usuarios_access_token = Yii::$app->security->generateRandomString();
-        //Asignar rol (esta por verse si se asigna por defecto o se deja en blanco)
-        //$model->tbl_usuarios_rol = 'user';
-
+        $model->scenario = 'create'; // Establece el escenario para activar la validación de password
+        
+       
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'tbl_usuarios_id' => $model->tbl_usuarios_id]);
+            if ($model->load($this->request->post())) {
+                if ($model->save()) {
+                    return $this->redirect(['view', 'tbl_usuarios_id' => $model->tbl_usuarios_id]);
+                } else {
+                    // Para depuración
+                    Yii::$app->session->setFlash('error', 'Errores de validación: ' . print_r($model->errors, true));
+                }
             }
         } else {
             $model->loadDefaultValues();
         }
-
+    
         return $this->render('create', [
             'model' => $model,
         ]);

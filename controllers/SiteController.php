@@ -27,7 +27,7 @@ class SiteController extends Controller
                         'roles' => ['?'], // Usuario no autenticado
                     ],
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['logout', 'index', 'contact', 'about'], 
                         'allow' => true,
                         'roles' => ['@'], // Usuario autenticado
                     ],
@@ -67,7 +67,7 @@ class SiteController extends Controller
     {
         // Redirigir usuarios autenticados a otra página
         if (!Yii::$app->user->isGuest) {
-            return $this->redirect(['dashboard/index']); // O cualquier otra página para usuarios autenticados
+            return $this->redirect(['materiales/index']); // O cualquier otra página para usuarios autenticados
         }
         
         return $this->render('index');

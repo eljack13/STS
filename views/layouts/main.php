@@ -517,6 +517,7 @@ $this->registerJs($customJs);
 <header id="header" class="elegant-header" data-aos="fade-down" data-aos-duration="600">
     <?php
     NavBar::begin([
+      
         'brandLabel' => '<span class="brand-text">STS</span>',
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
@@ -541,8 +542,7 @@ $this->registerJs($customJs);
                 ['label' => '<i class="fas fa-home nav-icon"></i><span class="nav-text">Inicio</span>', 'url' => ['/site/index']],
                 ['label' => '<i class="fas fa-chart-line nav-icon"></i><span class="nav-text">Materiales</span>', 'url' => ['/materiales/index']],
                 ['label' => '<i class="fas fa-users nav-icon"></i><span class="nav-text">Usuarios</span>', 'url' => ['/usuarios/index']],
-                ['label' => '<i class="fas fa-tasks nav-icon"></i><span class="nav-text">Tareas</span>', 'url' => ['/tareas/index']],
-                ['label' => '<i class="fas fa-file-alt nav-icon"></i><span class="nav-text">Reportes</span>', 'url' => ['/reportes/index']],
+                ['label' => '<i class="fas fa-file-alt nav-icon"></i><span class="nav-text">Reportes</span>', 'url' => ['/materiales/reportes']],
             ]
         ]);
     } else {
@@ -578,9 +578,7 @@ $this->registerJs($customJs);
                         <span class="nav-text user-email">' . Yii::$app->user->identity->tbl_usuarios_email . '</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-user-cog"></i> Perfil</a></li>
                         <li><a class="dropdown-item" href="#"><i class="fas fa-bell"></i> Notificaciones</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog"></i> Configuración</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>' . 
                             Html::beginForm(['/site/logout'], 'post', ['class' => 'logout-form']) .

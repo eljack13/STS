@@ -5,7 +5,6 @@ use Yii;
 use yii\web\IdentityInterface;
 use yii\db\ActiveRecord;
 
-
 /**
  * This is the model class for table "tbl_usuarios".
  *
@@ -24,7 +23,8 @@ use yii\db\ActiveRecord;
  */
 class TblUsuarios extends ActiveRecord implements IdentityInterface
 {
-
+    // Propiedad temporal para manejar la contraseña en texto plano
+    public $password;
 
     /**
      * {@inheritdoc}
@@ -41,13 +41,15 @@ class TblUsuarios extends ActiveRecord implements IdentityInterface
     {
         return [
             [['tbl_usuarios_recoverpass'], 'default', 'value' => null],
-            [['tbl_usuarios_nombre', 'tbl_usuarios_apellido', 'tbl_usuarios_email', 'tbl_usuarios_password',
-             'tbl_usuarios_auth_key', 'tbl_usuarios_access_token', 'tbl_usuarios_telefono', 'tbl_usuarios_rol', 
-             'tbl_usuarios_created'], 'required'],
+            [['tbl_usuarios_nombre', 'tbl_usuarios_apellido', 'tbl_usuarios_email', 'tbl_usuarios_telefono', 'tbl_usuarios_rol'], 'required'],
+            [['password'], 'required', 'on' => 'create'],
             [['tbl_usuarios_created', 'tbl_usuarios_createdby'], 'safe'],
             [['tbl_usuarios_nombre', 'tbl_usuarios_apellido', 'tbl_usuarios_email', 
             'tbl_usuarios_password', 'tbl_usuarios_recoverpass', 'tbl_usuarios_auth_key', 
-            'tbl_usuarios_access_token', 'tbl_usuarios_telefono', 'tbl_usuarios_rol'], 'string', 'max' => 100],
+            'tbl_usuarios_access_token', 'tbl_usuarios_telefono'], 'string', 'max' => 100],
+            ['tbl_usuarios_email', 'email'],
+            ['tbl_usuarios_email', 'unique'],
+            ['tbl_usuarios_rol', 'in', 'range' => ['admin', 'usuario']],
         ];
     }
 
@@ -57,22 +59,19 @@ class TblUsuarios extends ActiveRecord implements IdentityInterface
     public function attributeLabels()
     {
         return [
-            'tbl_usuarios_id' => 'Tbl Usuarios ID',
-            'tbl_usuarios_nombre' => 'Tbl Usuarios Nombre',
-            'tbl_usuarios_apellido' => 'Tbl Usuarios Apellido',
-            'tbl_usuarios_email' => 'Tbl Usuarios Email',
-            'tbl_usuarios_password' => 'Tbl Usuarios Password',
-            'tbl_usuarios_recoverpass' => 'Tbl Usuarios Recoverpass',
-            'tbl_usuarios_auth_key' => 'Tbl Usuarios Auth Key',
-            'tbl_usuarios_access_token' => 'Tbl Usuarios Access Token',
-            'tbl_usuarios_telefono' => 'Tbl Usuarios Telefono',
-            'tbl_usuarios_rol' => 'Tbl Usuarios Rol',
-            'tbl_usuarios_created' => 'Tbl Usuarios Created',
-            'tbl_usuarios_createdby' => 'Tbl Usuarios Createdby',
+            'tbl_usuarios_id' => 'ID',
+            'tbl_usuarios_nombre' => 'Nombre',
+            'tbl_usuarios_apellido' => 'Apellido',
+            'tbl_usuarios_email' => 'Email',
+            'password' => 'Contraseña',
+            'tbl_usuarios_telefono' => 'Teléfono',
+            'tbl_usuarios_rol' => 'Rol',
+            'tbl_usuarios_created' => 'Fecha de creación',
+            'tbl_usuarios_createdby' => 'Creado por',
         ];
     }
 
-      /**
+    /**
      * Finds an identity by the given ID.
      * @param string|int $id the ID to be looked for
      * @return IdentityInterface|null the identity object that matches the given ID.
@@ -81,22 +80,53 @@ class TblUsuarios extends ActiveRecord implements IdentityInterface
     {
         return static::findOne(['tbl_usuarios_id' => $id]);
     }
- public function beforeSave($insert)
+
+    /**
+     * Antes de guardar el modelo
+     */
+    public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
-            // Solo hash la contraseña si es nueva o ha cambiado
-            if (!empty($this->tbl_usuarios_password)) {
-                try {
-                    $this->tbl_usuarios_password = Yii::$app->security->generatePasswordHash($this->tbl_usuarios_password);
-                } catch (\Exception $e) {
-                    Yii::error("Error al generar hash de contraseña: " . $e->getMessage());
-                    return false;
-                }
+            // Generar auth_key y access_token para nuevos usuarios
+            if ($insert) {
+                $this->tbl_usuarios_auth_key = Yii::$app->security->generateRandomString();
+                $this->tbl_usuarios_access_token = Yii::$app->security->generateRandomString();
+                $this->tbl_usuarios_created = date('Y-m-d H:i:s');
+                $this->tbl_usuarios_createdby = !Yii::$app->user->isGuest ? Yii::$app->user->identity->tbl_usuarios_email : 'Sistema';
             }
+
+            // Encriptar contraseña solo si es nueva o ha cambiado
+            if (!empty($this->password)) {
+                $this->tbl_usuarios_password = Yii::$app->security->generatePasswordHash($this->password);
+            }
+
             return true;
         }
         return false;
     }
+
+    /**
+     * Después de guardar, asignar rol RBAC
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+        
+        // Asignar rol RBAC
+        $auth = Yii::$app->authManager;
+        
+        // Si es un update, remover roles anteriores
+        if (!$insert) {
+            $auth->revokeAll($this->tbl_usuarios_id);
+        }
+        
+        // Asignar nuevo rol según el campo tbl_usuarios_rol
+        $role = $auth->getRole($this->tbl_usuarios_rol);
+        if ($role) {
+            $auth->assign($role, $this->tbl_usuarios_id);
+        }
+    }
+
     /**
      * Finds an identity by the given token.
      * @param mixed $token the token to be looked for
@@ -105,7 +135,7 @@ class TblUsuarios extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null)
     {
-        return null; // No implementamos tokens por ahora
+        return static::findOne(['tbl_usuarios_access_token' => $token]);
     }
 
     /**
@@ -123,7 +153,7 @@ class TblUsuarios extends ActiveRecord implements IdentityInterface
      */
     public function getAuthKey()
     {
-        return null; // Implementar si se necesita "remember me"
+        return $this->tbl_usuarios_auth_key;
     }
 
     /**
@@ -133,7 +163,7 @@ class TblUsuarios extends ActiveRecord implements IdentityInterface
      */
     public function validateAuthKey($authKey)
     {
-        return false; // Implementar si se necesita "remember me"
+        return $this->getAuthKey() === $authKey;
     }
 
     /**
@@ -154,5 +184,25 @@ class TblUsuarios extends ActiveRecord implements IdentityInterface
     public static function findByEmail($email)
     {
         return static::findOne(['tbl_usuarios_email' => $email]);
+    }
+    
+    /**
+     * Obtiene el rol RBAC actual del usuario
+     * @return string el nombre del rol
+     */
+    public function getRbacRole()
+    {
+        $auth = Yii::$app->authManager;
+        $roles = $auth->getRolesByUser($this->tbl_usuarios_id);
+        return empty($roles) ? null : reset($roles)->name;
+    }
+    
+    /**
+     * Verifica si el usuario es administrador 
+     * @return bool
+     */
+    public function isAdmin()
+    {
+        return $this->tbl_usuarios_rol === 'admin';
     }
 }

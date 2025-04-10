@@ -46,7 +46,7 @@ $customCss = <<<CSS
 .hero-section {
     position: relative;
     padding: 5rem 0;
-    background: linear-gradient(135deg, rgba(247, 250, 252, 0.9), rgba(237, 242, 247, 0.9));
+    background: transparent; 
     border-radius: 15px;
     overflow: hidden;
     margin-bottom: 4rem;
@@ -63,6 +63,26 @@ $customCss = <<<CSS
     opacity: 0.05;
     z-index: 0;
 }
+.hero-video-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.hero-video-container video {
+    min-width: 100%;
+    min-height: 100%;
+    object-fit: cover;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.5; /* Ajusta esta opacidad según necesites */
+}
 
 #particles-js {
     position: absolute;
@@ -75,7 +95,7 @@ $customCss = <<<CSS
 
 .hero-content {
     position: relative;
-    z-index: 1;
+    z-index: 2;
 }
 
 .hero-title {
@@ -910,18 +930,24 @@ JS;
 $this->registerJs($customJs);
 ?>
 
-<div class="site-index">
-    <!-- Hero Section -->
-    <div class="hero-section">
-        <div id="particles-js"></div>
-        
-        <div class="jumbotron text-center bg-transparent mt-3 mb-5">
+<div class="hero-section">
+    <div id="particles-js"></div>
+    
+    <!-- Video de fondo -->
+    <div class="hero-video-container fade-in visible scale-in">
+        <video autoplay muted loop>
+            <source src="https://cdn.pixabay.com/video/2020/04/27/37379-413555939_large.mp4" type="video/mp4">
+            Tu navegador no soporta el video.
+        </video>
+    </div>
+    
+    <div class="jumbotron text-center bg-transparent mt-3 mb-5">
             <div class="row">
                 <div class="col-lg-6 hero-content" data-aos="fade-right">
                     <h1 class="hero-title">Sistema de Gestión Empresarial Integral</h1>
                     <p class="hero-subtitle">La solución completa para <span class="typed-text"></span> que tu empresa necesita para crecer y optimizar sus procesos.</p>
                     
-                    <div class="hero-buttons">
+                    <div class="hero-buttons m-4">
                         <a href="#" class="btn-primary-sts btn-lg">
                             <i class="fas fa-rocket"></i> Comenzar Ahora
                         </a>
@@ -930,24 +956,24 @@ $this->registerJs($customJs);
                         </a>
                     </div>
                     
-                    <div class="hero-stats">
+                    <div class="hero-stats m-4">
                         <div class="stat-item">
-                            <div class="stat-number" data-target="5000">0</div>
+                            <div class="stat-number" data-target="5000">+78</div>
                             <div class="stat-label">Empresas Confían en Nosotros</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-number" data-target="98">0</div>
+                            <div class="stat-number" data-target="98">97</div>
                             <div class="stat-label">% de Satisfacción</div>
                         </div>
                         <div class="stat-item">
-                            <div class="stat-number" data-target="24">0</div>
+                            <div class="stat-number" data-target="24">24</div>
                             <div class="stat-label">Soporte 24/7</div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="col-lg-6 hero-image" data-aos="fade-left">
-                    <img src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-KHpj5Z2b0q5wXyNyAsPf4epCW4w9NA.png" alt="STS Dashboard" class="reveal-image">
+                    <img src="https://media.istockphoto.com/id/1443871954/video/autumn-truck-transport.mp4?s=mp4-640x640-is&k=20&c=N-f9GfO9AuZ2b5rqifzcJxBBI72on3R6WsotqaIdCLM=" alt="STS Dashboard" class="reveal-image">
                 </div>
             </div>
         </div>

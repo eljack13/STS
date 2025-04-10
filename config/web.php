@@ -21,6 +21,9 @@ $config = [
         }
     },
     'components' => [
+        'inventario' => [
+            'class' => 'app\services\InventarioService',
+        ],
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => '6AEFPNDJ6jOnN5YZclCfjzHSWxPDD3bR',
